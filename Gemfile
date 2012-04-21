@@ -27,6 +27,7 @@ gem 'gchartrb',            '~> 0.8.0', :require => 'google_chart'
 gem 'hpricot',             '~> 0.8.2'
 gem 'paperclip',           '~> 2.3.1'
 gem 'vpim',                '=  0.695', :require => 'vpim/icalendar'
+gem 'action_mailer_tls',   '~> 1.1.3'
 
 group :development do
   gem 'capistrano',     :require => false
