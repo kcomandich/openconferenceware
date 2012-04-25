@@ -1137,4 +1137,98 @@ describe ProposalsController do
       end
     end
   end
+
+  def assert_confirmed
+    post :speaker_confirm, :id => @proposal.id
+    @proposal.reload
+    @proposal.status.should == 'confirmed'
+    flash[:success].should =~ /Updated/
+  end
+
+  def assert_not_confirmed
+    post :speaker_confirm, :id => @proposal.id
+    @proposal.reload
+    @proposal.status.should_not == 'confirmed'
+    flash[:success].should_not =~ /Updated/
+  end
+
+  describe "speaker confirm" do
+    describe "accepted proposal" do
+      before(:each) do
+        @proposal = proposals(:quentin_widgets)
+        @proposal.accept!
+      end
+
+      it "should confirm for owners of the proposal" do
+        login_as(users(:quentin))
+        assert_confirmed
+      end
+      it "should not confirm for non-owners of the proposal" do
+        login_as(users(:aaron))
+        assert_not_confirmed
+      end
+    end
+
+    describe "not-accepted proposal" do
+      before(:each) do
+        @proposal = proposals(:quentin_widgets)
+      end
+
+      it "should not confirm for owners of the proposal" do
+        login_as(users(:quentin))
+        lambda { post :speaker_confirm, :id => @proposal.id }.should raise_error(AASM::InvalidTransition)
+      end
+      it "should not confirm for non-owners of the proposal" do
+        login_as(users(:aaron))
+        assert_not_confirmed
+      end
+    end
+  end
+
+  def assert_declined
+    post :speaker_decline, :id => @proposal.id
+    @proposal.reload
+    @proposal.status.should == 'declined'
+    flash[:success].should =~ /Updated/
+  end
+
+  def assert_not_declined
+    post :speaker_decline, :id => @proposal.id
+    @proposal.reload
+    @proposal.status.should_not == 'declined'
+    flash[:success].should_not =~ /Updated/
+  end
+
+  describe "speaker decline" do
+    describe "accepted proposal" do
+      before(:each) do
+        @proposal = proposals(:quentin_widgets)
+        @proposal.accept!
+      end
+
+      it "should decline for owners of the proposal" do
+        login_as(users(:quentin))
+        assert_declined
+      end
+      it "should not decline for non-owners of the proposal" do
+        login_as(users(:aaron))
+        assert_not_declined
+      end
+    end
+
+    describe "not-accepted proposal" do
+      before(:each) do
+        @proposal = proposals(:quentin_widgets)
+      end
+
+      it "should not decline for owners of the proposal" do
+        login_as(users(:quentin))
+        lambda { post :speaker_decline, :id => @proposal.id }.should raise_error(AASM::InvalidTransition)
+      end
+      it "should not decline for non-owners of the proposal" do
+        login_as(users(:aaron))
+        assert_not_declined
+      end
+    end
+  end
 end
