@@ -61,11 +61,11 @@ describe SpeakerMailer do
     end
 
     it "should raise error if email template not found" do
-      lambda { SpeakerMailer.deliver_speaker_email('acceptance_subject', 'test_text', @proposal) }.should raise_error(ActiveRecord::RecordNotFound)
+      lambda { SpeakerMailer.deliver_speaker_email('proposals_acceptance_email_subject', 'test_text', @proposal) }.should raise_error(ActiveRecord::RecordNotFound)
     end
 
     it "should raise error if subject template not found" do
-      lambda { SpeakerMailer.deliver_speaker_email('test_subject', 'acceptance_email', @proposal) }.should raise_error(ActiveRecord::RecordNotFound)
+      lambda { SpeakerMailer.deliver_speaker_email('test_subject', 'proposals_acceptance_email_text', @proposal) }.should raise_error(ActiveRecord::RecordNotFound)
     end
   end
 
